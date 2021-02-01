@@ -2,6 +2,7 @@ package com.xinghai.log.lib.engine;
 
 
 import com.xinghai.log.lib.AppLogger;
+import com.xinghai.log.lib.intercept.LogIntercept;
 import com.xinghai.log.lib.writer.FileLogger;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,6 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class FileLoggerEngine implements Runnable{
 
     private FileLogger fileLogger;
+
+    private LogIntercept logIntercept;
 
     private LinkedBlockingQueue<LogItem> queue;
 
@@ -18,11 +21,12 @@ public class FileLoggerEngine implements Runnable{
         fileLogger = new FileLogger(AppLogger.getFolderPath(), fileName);
         fileLogger.setMessageProcessor(AppLogger.getMessageProcessorFactory().createMessageProcessor());
         fileLogger.setFileInterceptList(AppLogger.getFileInterceptFactory().createFileIntercepts());
+        logIntercept = AppLogger.getLogIntercept();
     }
 
     public void enqueue(@Level int level, String tag, String msg) {
-        if (AppLogger.getLogIntercept() != null) {
-            AppLogger.getLogIntercept().intercept(level, tag, msg);
+        if (logIntercept != null) {
+            logIntercept.intercept(level, tag, msg);
         }
 
         if (!isStart) {
