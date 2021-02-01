@@ -80,6 +80,7 @@ public class MyAnnotationProcessor extends AbstractProcessor {
                 .addStatement("$T logger = loggerHashMap.get(fileName)", appLogger)
                 .beginControlFlow("if (logger == null)")
                 .beginControlFlow("synchronized(AppLoggerUtil.class)")
+                .addStatement("logger = loggerHashMap.get(fileName)")
                 .beginControlFlow("if (logger == null)")
                 .addStatement("logger = new $T(fileName)", appLogger)
                 .addStatement("loggerHashMap.put(fileName, logger)")
