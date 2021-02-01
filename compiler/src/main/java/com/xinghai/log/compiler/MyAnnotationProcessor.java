@@ -61,7 +61,7 @@ public class MyAnnotationProcessor extends AbstractProcessor {
     private void generateJavaClass(String defaultLogFile, String[] files) {
         Set<MethodSpec> methodSpecs = new HashSet<>();
 
-        ClassName appLogger = ClassName.get("com.example.filelogger", "AppLogger");
+        ClassName appLogger = ClassName.get("com.xinghai.log.lib", "AppLogger");
 
         ClassName stringClass = ClassName.get("java.lang", "String");
 
@@ -79,7 +79,7 @@ public class MyAnnotationProcessor extends AbstractProcessor {
                 .addParameter(String.class, "fileName")
                 .addStatement("$T logger = loggerHashMap.get(fileName)", appLogger)
                 .beginControlFlow("if (logger == null)")
-                .beginControlFlow("synchronized(MyLogUtil.class)")
+                .beginControlFlow("synchronized(AppLoggerUtil.class)")
                 .beginControlFlow("if (logger == null)")
                 .addStatement("logger = new $T(fileName)", appLogger)
                 .addStatement("loggerHashMap.put(fileName, logger)")
@@ -139,7 +139,7 @@ public class MyAnnotationProcessor extends AbstractProcessor {
             }
         }
 
-        TypeSpec typeSpec = TypeSpec.classBuilder("MyLogUtil")
+        TypeSpec typeSpec = TypeSpec.classBuilder("AppLoggerUtil")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addField(fieldMap)
                 .addMethod(defaultLogger)
